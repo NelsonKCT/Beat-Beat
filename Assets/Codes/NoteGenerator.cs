@@ -5,50 +5,50 @@ using UnityEngine;
 public class NoteGenerator : MonoBehaviour
 {
     /*
-        audioSource : 背景音樂
+        bgm : 背景音樂
         judgePoint : 判定點
         notePrefab : 音符的 clone
         bpm : 背景音樂的 bpm
         judgePointPosition : 判定點的位置
         generatePosition : "應"生成的位置
-        span : 生成間隔
         nextNote : 下個音符生成的時間 (目前假設固定4分音符)
         offset : 第一個音符的延遲
         
     */
 
-    AudioSource audioSource;
+    AudioSource bgm;
     GameObject judgePoint;
+    GameObject gameDirector;
     public GameObject notePrefab;
     float bpm = 190f;
     float judgePointPosition;
     float generatePosition = 10f;
-    float span;
-    float nextNote;
+
     float offset = 1.357f;
-    
+
     void Start()
     {
-        span = 60 / bpm;
-        audioSource = GetComponent<AudioSource>();
+        Application.targetFrameRate = 480;
+        bgm = GetComponent<AudioSource>();
+        gameDirector = GameObject.Find("GameDirector");
         judgePoint = GameObject.Find("JudgePoint");
         judgePointPosition = judgePoint.transform.position.x;
-        nextNote = span + offset;
+        //預先生成100個等間隔的音符
+        for (float i = 0f; i < 100; i++) {
+            GameObject go = Instantiate(notePrefab) as GameObject;
+            gameDirector.GetComponent<GameDirector>().notesDisplaying.Enqueue(go);
+            //print((generatePosition - judgePointPosition) * (i / 4 + 1 + offset / (240 / bpm)) + judgePointPosition);
+            go.transform.position = new Vector3((generatePosition - judgePointPosition) * (i / 4 + offset / (240 / bpm)), 0, 0);
+        }
     }
 
-    
+    int cnt = 0;
     void Update()
     {
-        //如果現在音樂播放到的時間 = nextNote，就生成下個音符，並把 nextNote 推移 span
-        if (audioSource.time > nextNote) {
-            GameObject go = Instantiate(notePrefab) as GameObject;
-
-            //下面用於兩行用於調整音符的生成位置(因為 update 的時間會有誤差)
-            float ratio = (span * 4 + (nextNote - audioSource.time)) / (span * 4);
-            go.transform.position = new Vector3((generatePosition - judgePointPosition) * ratio + judgePointPosition, 0, 0);
-
-            //print(((generatePosition - judgePointPosition) * ratio + judgePointPosition) + "\n" + ratio);
-            nextNote += span;
+        //延遲一段時間後再播放bgm
+        cnt++;
+        if (cnt == 200) {
+            bgm.Play();
         }
     }
 }
