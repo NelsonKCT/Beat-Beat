@@ -5,6 +5,7 @@ using System.IO;
 public class NoteGenerator : MonoBehaviour
 {
     /*
+        fumenInfo：譜面資訊
         bgm : 背景音樂
         judgePoint : 判定點
         notePrefab : 音符的 clone
@@ -38,9 +39,12 @@ public class NoteGenerator : MonoBehaviour
         judgePoint = GameObject.Find("JudgePoint");
         judgePointPosition = judgePoint.transform.position.x;
         int lineIndex = 4;
+        //讀入此歌的 bpm 及 offset
         bpm = float.Parse(listOfNotes[1]);
         offset = float.Parse(listOfNotes[3]);
         print(bpm + " " + offset);
+        //一一讀入音符，如果是 0 的話表示沒有音符
+        //TODO：增加不同的音符種類
         while(!string.Equals(listOfNotes[lineIndex], "END")) {
             for (int i = 0; i < (listOfNotes[lineIndex].Length - 1); i++) {
                 if (listOfNotes[lineIndex][i] == '0') continue;
@@ -51,15 +55,6 @@ public class NoteGenerator : MonoBehaviour
             }
             lineIndex++;
         }
-        //預先生成100個等間隔的音符
-        /*
-        for (float i = 0f; i < 100; i++) {
-            GameObject go = Instantiate(notePrefab) as GameObject;
-            gameDirector.GetComponent<GameDirector>().notesDisplaying.Enqueue(go);
-            //print((generatePosition - judgePointPosition) * (i / 4 + 1 + offset / (240 / bpm)) + judgePointPosition);
-            go.transform.position = new Vector3((generatePosition - judgePointPosition) * (i / 4 + offset / (240 / bpm)), 0, 0);
-        }
-        */
     }
 
     int cnt = 0;
