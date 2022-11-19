@@ -462,6 +462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4974f2d2e37c05446b2f40e87442e952, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fumenInfo: {fileID: 4900000, guid: 7f112e23b0c6cd141a0160c94154e3fe, type: 3}
   notePrefab: {fileID: 7324955193198001247, guid: 22f4ca7c20c435448b1c1ceff72bc32a, type: 3}
 --- !u!4 &2098017812
 Transform:

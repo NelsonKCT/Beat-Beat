@@ -44,6 +44,7 @@ public class NoteController : MonoBehaviour
         judgePointPosition = judgePoint.transform.position.x;
         //下面一行程式用來調整音符的判定時間，因為每個音符生成的位置不同
         judgeTime = (transform.position.x - judgePointPosition) / (generatePosition - judgePointPosition) * (240 / bpm);
+        print(judgeTime);
         speed = (judgePointPosition - generatePosition) / (240 / bpm);
         //print((-8.81 - speed * judgeTime) + " " + (transform.position.x));
         travelDis = speed / (Application.targetFrameRate);
@@ -64,7 +65,7 @@ public class NoteController : MonoBehaviour
     若差距 0.1s 便是 great
     */
     public int checkIfHit () {
-       // print(judgeTime + " " + bgm.time + " " + transform.position.x);
+        print(judgeTime + " " + bgm.time + " " + transform.position.x);
         if (Math.Abs(judgeTime - bgm.time) < 0.05) {
             gameDirector.GetComponent<GameDirector>().calculate_score(1);
             Destroy(gameObject);

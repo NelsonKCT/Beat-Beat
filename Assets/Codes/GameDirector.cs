@@ -25,8 +25,8 @@ public class GameDirector : MonoBehaviour
     void Update()
     {
         //如果按下空白鍵，就判定有沒有擊中拍子
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            sfx.Play();
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.J)) {
+            //sfx.Play();
             int hit = notesDisplaying.Peek().GetComponent<NoteController>().checkIfHit();
             if (hit != 0) {
                 notesDisplaying.Dequeue();
