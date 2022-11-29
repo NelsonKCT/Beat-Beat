@@ -34,8 +34,11 @@ public class NoteController : MonoBehaviour
     float bpm = 190f;
     float speed;
     float travelDis;
+
+    
     void Start()
     {
+        
         Application.targetFrameRate = 120;
         judgePoint = GameObject.Find("JudgePoint");
         noteGenerator = GameObject.Find("NoteGenerator");
@@ -67,14 +70,18 @@ public class NoteController : MonoBehaviour
     public int checkIfHit () {
         print(judgeTime + " " + bgm.time + " " + transform.position.x);
         if (Math.Abs(judgeTime - bgm.time) < 0.05) {
+            
             gameDirector.GetComponent<GameDirector>().calculate_score(1);
             Destroy(gameObject);
             return 1;
         } else if (Math.Abs(judgeTime - bgm.time) < 0.1) {
+            
             gameDirector.GetComponent<GameDirector>().calculate_score(2);
             Destroy(gameObject);
             return 2;
-        }
+        } 
         return 0;
     }
+
+    
 }

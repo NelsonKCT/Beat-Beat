@@ -13,8 +13,11 @@ public class GameDirector : MonoBehaviour
     float score;
     float combo;
     public Queue<GameObject> notesDisplaying;
+
+    [SerializeField] int Hp;
     void Start()
     {
+        Hp = 100;
         combo = 0f;
         score = 0f;
         notesDisplaying = new Queue<GameObject>();
@@ -46,16 +49,27 @@ public class GameDirector : MonoBehaviour
     // calculate_score 用以計算擊中拍點的分數，type = 1 是 perfect，type = 2 是 great，type = 3 是 miss
     public void calculate_score(int type) {
         if (type == 1) {
+            ModifyHp(10);
             score += (float) (100 * (1 + combo * 0.02));
             combo++;
         } else if (type == 2) {
+            ModifyHp(5);
             score += (float) (50 * (1 + combo * 0.02));
             combo++;
         } else if (type == 3) {
+            ModifyHp(-10);
             combo = 0;
         }
         //print("score : " + score + " combo : " + combo + "\ntype : "+ type);
     }
-
+    void ModifyHp(int num) {
+        Hp += num;
+        if (Hp > 100) {
+            Hp = 100;
+        }
+        else if (Hp < 0) {
+            Hp = 0;
+        }
+    }
 
 }
