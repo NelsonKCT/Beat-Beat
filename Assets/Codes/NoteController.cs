@@ -27,6 +27,7 @@ public class NoteController : MonoBehaviour
     GameObject judgePoint; 
     GameObject gameDirector;
     GameObject noteGenerator;
+    SpriteRenderer spriteRenderer;
     public AudioSource bgm;
     float judgePointPosition;
     float generatePosition = 10f;
@@ -38,13 +39,14 @@ public class NoteController : MonoBehaviour
     
     void Start()
     {
-        
         Application.targetFrameRate = 120;
         judgePoint = GameObject.Find("JudgePoint");
         noteGenerator = GameObject.Find("NoteGenerator");
         gameDirector = GameObject.Find("GameDirector");
         bgm = noteGenerator.GetComponent<AudioSource>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         judgePointPosition = judgePoint.transform.position.x;
+        spriteRenderer.enabled = false;
         //下面一行程式用來調整音符的判定時間，因為每個音符生成的位置不同
         judgeTime = (transform.position.x - judgePointPosition) / (generatePosition - judgePointPosition) * (240 / bpm);
         print(judgeTime);
@@ -54,9 +56,12 @@ public class NoteController : MonoBehaviour
         
         
     }
-
+    
     void Update()
     {
+        if (!spriteRenderer.enabled && transform.position.x < 9) {
+            spriteRenderer.enabled = true;
+        }
         if (bgm.isPlaying) {
             transform.Translate(travelDis, 0, 0);
         }
@@ -71,12 +76,11 @@ public class NoteController : MonoBehaviour
     public int checkIfHit () {
         //print(judgeTime + " " + bgm.time + " " + transform.position.x);
         if (Math.Abs(judgeTime - bgm.time) < 0.05) {
-            gameDirector.GetComponent<GameDirector>().calculate_score(1);
             return 1;
         } else if (Math.Abs(judgeTime - bgm.time) < 0.1) {
-            gameDirector.GetComponent<GameDirector>().calculate_score(2);
             return 2;
         } else if (judgeTime - bgm.time < -0.1) {
+            print(judgeTime + " " + bgm.time + " " + transform.position.x);
             return 3;
         }
         return 0;
