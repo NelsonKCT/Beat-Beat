@@ -5,71 +5,82 @@ using UnityEngine;
 public class GameDirector : MonoBehaviour
 {
     /*
-    score : 分數
     combo : combo
     notesDisplaying : 目前出現在遊戲內的 notes
+    player : 玩家物件
+    enemy : 敵人物件
+    playerController : 操控玩家的主程式
+    enemyController : 操控敵人的主程式
     */
     AudioSource sfx;
-    float score;
     float combo;
     public Queue<GameObject> notesDisplaying;
 
-    [SerializeField] int Hp;
+    GameObject player;
+    GameObject enemy;
+    PlayerController playerController;
+    EnemyController enemyController;
     void Start()
     {
-        Hp = 100;
         combo = 0f;
-        score = 0f;
         notesDisplaying = new Queue<GameObject>();
         sfx = GetComponent<AudioSource>();
+        player = GameObject.Find("Player");
+        enemy = GameObject.Find("Enemy");
+        playerController = player.GetComponent<PlayerController>();
+        enemyController = enemy.GetComponent<EnemyController>();
     }
 
     
     void Update()
     {
-        //如果按下空白鍵，就判定有沒有擊中拍子
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.J)) {
+        //如果按下F或J，就判定有沒有擊中拍子
+        if (notesDisplaying.Count > 0 && (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.J))) {
             //sfx.Play();
             int hit = notesDisplaying.Peek().GetComponent<NoteController>().checkIfHit();
-            if (hit != 0) {
-                notesDisplaying.Dequeue();
-                calculate_score(hit);
-                
+            if (hit == 1 || hit == 2 || hit == 3) {
+                GameObject this_note = notesDisplaying.Dequeue();
+                Destroy(this_note);
+                calculate_result(hit);
             }
         }
         //如果超出邊界，便自動摧毀，並判定miss
-        if (notesDisplaying.Count > 0 && notesDisplaying.Peek().GetComponent<Transform>().transform.position.x < -11) {
-            GameObject this_note = notesDisplaying.Dequeue();
-            Destroy(this_note);
-            calculate_score(3);
+        if (notesDisplaying.Count > 0) {
+            if (notesDisplaying.Peek().GetComponent<NoteController>().checkIfHit() == 4) {
+                GameObject this_note = notesDisplaying.Dequeue();
+                Destroy(this_note);
+                calculate_result(4);
+            }
+            
         }
         
         
     }
-    // calculate_score 用以計算擊中拍點的分數，type = 1 是 perfect，type = 2 是 great，type = 3 是 miss
-    public void calculate_score(int type) {
+    /* calculate_result 用以計算擊中拍點的結果，
+    type = 0 是尚未進判定點
+    type = 1 是 perfect(+-30ms)，打出全額傷害並且回復20%自身攻擊的血量
+    type = 2 是 great(+-50ms)，打出60%傷害並且回復10%自身攻擊的血量
+    type = 3 是 good(+-80ms)，打出30%傷害且受到50%敵方攻擊的傷害並使combo歸0
+    type = 4 是 miss(>80ms)，受到敵方全額傷害且combo歸0
+    */
+    public void calculate_result(int type) {
         if (type == 1) {
-            ModifyHp(10);
-            score += (float) (100 * (1 + combo * 0.02));
+            playerController.modifyHP((float)(playerController.attack * 0.2 * (1 + 0.02 * combo)));
+            enemyController.modifyHP((float)(-playerController.attack * (1 + 0.02 * combo)));
             combo++;
         } else if (type == 2) {
-            ModifyHp(5);
-            score += (float) (50 * (1 + combo * 0.02));
+            playerController.modifyHP((float)(playerController.attack * 0.1 * (1 + 0.02 * combo)));
+            enemyController.modifyHP((float)(-playerController.attack * 0.6 * (1 + 0.02 * combo)));
             combo++;
         } else if (type == 3) {
-            ModifyHp(-10);
+            enemyController.modifyHP((float)(-playerController.attack * 0.3));
+            playerController.modifyHP((float)(-enemyController.attack * 0.5));
             combo = 0;
+        } else if (type == 4) {
+            playerController.modifyHP((float)-enemyController.attack);
         }
-        //print("score : " + score + " combo : " + combo + "\ntype : "+ type);
+        print("combo : " + combo + "\ntype : "+ type);
     }
-    void ModifyHp(int num) {
-        Hp += num;
-        if (Hp > 100) {
-            Hp = 100;
-        }
-        else if (Hp < 0) {
-            Hp = 0;
-        }
-    }
+    
 
 }

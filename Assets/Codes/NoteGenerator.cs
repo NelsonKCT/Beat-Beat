@@ -24,7 +24,7 @@ public class NoteGenerator : MonoBehaviour
     float bpm;
     float judgePointPosition;
     float generatePosition = 10f;
-
+    
     float offset;
 
     void Start()
