@@ -14,7 +14,7 @@ public class GameDirector : MonoBehaviour
     float combo;
     public Queue<GameObject> notesDisplaying;
 
-    [SerializeField] int Hp;
+    
     void Start()
     {
         Hp = 100;
@@ -27,21 +27,24 @@ public class GameDirector : MonoBehaviour
     
     void Update()
     {
-        //如果按下空白鍵，就判定有沒有擊中拍子
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.J)) {
+        //如果按下F或J，就判定有沒有擊中拍子
+        if (notesDisplaying.Count > 0 && (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.J))) {
             //sfx.Play();
             int hit = notesDisplaying.Peek().GetComponent<NoteController>().checkIfHit();
-            if (hit != 0) {
-                notesDisplaying.Dequeue();
+            if (hit == 1 || hit == 2) {
+                GameObject this_note = notesDisplaying.Dequeue();
+                Destroy(this_note);
                 calculate_score(hit);
-                
             }
         }
         //如果超出邊界，便自動摧毀，並判定miss
-        if (notesDisplaying.Count > 0 && notesDisplaying.Peek().GetComponent<Transform>().transform.position.x < -11) {
-            GameObject this_note = notesDisplaying.Dequeue();
-            Destroy(this_note);
-            calculate_score(3);
+        if (notesDisplaying.Count > 0) {
+            if (notesDisplaying.Peek().GetComponent<NoteController>().checkIfHit() == 3) {
+                GameObject this_note = notesDisplaying.Dequeue();
+                Destroy(this_note);
+                calculate_score(3);
+            }
+            
         }
         
         
@@ -62,14 +65,6 @@ public class GameDirector : MonoBehaviour
         }
         //print("score : " + score + " combo : " + combo + "\ntype : "+ type);
     }
-    void ModifyHp(int num) {
-        Hp += num;
-        if (Hp > 100) {
-            Hp = 100;
-        }
-        else if (Hp < 0) {
-            Hp = 0;
-        }
-    }
+    
 
 }

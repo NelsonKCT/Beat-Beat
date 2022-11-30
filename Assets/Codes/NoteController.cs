@@ -27,10 +27,10 @@ public class NoteController : MonoBehaviour
     GameObject judgePoint; 
     GameObject gameDirector;
     GameObject noteGenerator;
-    AudioSource bgm;
+    public AudioSource bgm;
     float judgePointPosition;
     float generatePosition = 10f;
-    float judgeTime;
+    public float judgeTime;
     float bpm = 190f;
     float speed;
     float travelDis;
@@ -66,20 +66,19 @@ public class NoteController : MonoBehaviour
     checkIfHit 用來判定是否擊中拍點
     若差距 0.05s 便是 perfect
     若差距 0.1s 便是 great
+    若延遲一秒還未被擊打就當作miss
     */
     public int checkIfHit () {
-        print(judgeTime + " " + bgm.time + " " + transform.position.x);
+        //print(judgeTime + " " + bgm.time + " " + transform.position.x);
         if (Math.Abs(judgeTime - bgm.time) < 0.05) {
-            
             gameDirector.GetComponent<GameDirector>().calculate_score(1);
-            Destroy(gameObject);
             return 1;
         } else if (Math.Abs(judgeTime - bgm.time) < 0.1) {
-            
             gameDirector.GetComponent<GameDirector>().calculate_score(2);
-            Destroy(gameObject);
             return 2;
-        } 
+        } else if (judgeTime - bgm.time < -0.1) {
+            return 3;
+        }
         return 0;
     }
 
