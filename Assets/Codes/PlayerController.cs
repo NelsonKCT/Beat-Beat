@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     float maxHp;
     public float attack;
     SpriteRenderer spriteRenderer;
+    [SerializeField] Healthbar _healthbar;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,5 +36,6 @@ public class PlayerController : MonoBehaviour
     //修改血量
     public void modifyHP(float num) {
         hp = ((hp + num) > maxHp) ? maxHp : hp + num;
+        _healthbar.setHealth((int)hp);
     }
 }
