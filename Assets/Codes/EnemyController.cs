@@ -15,6 +15,7 @@ public class EnemyController : MonoBehaviour
     public float attack;
     // Start is called before the first frame update
     SpriteRenderer spriteRenderer;
+    [SerializeField] Enemy_Healthbar enemy_healthbar;
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -34,5 +35,6 @@ public class EnemyController : MonoBehaviour
     //修改血量
     public void modifyHP(float num) {
         hp = ((hp + num) > maxHp) ? maxHp : hp + num;
+        enemy_healthbar.Enemy_setHealth((int)hp);
     }
 }

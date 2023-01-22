@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameDirector : MonoBehaviour
 {
@@ -14,21 +15,29 @@ public class GameDirector : MonoBehaviour
     */
     AudioSource sfx;
     float combo;
+    float damage;
     public Queue<GameObject> notesDisplaying;
 
     GameObject player;
     GameObject enemy;
+    GameObject comboText;
+    GameObject judgeText;
+    GameObject damageText;
     PlayerController playerController;
     EnemyController enemyController;
     void Start()
     {
         combo = 0f;
+        damage = 0f;
         notesDisplaying = new Queue<GameObject>();
         sfx = GetComponent<AudioSource>();
         player = GameObject.Find("Player");
         enemy = GameObject.Find("Enemy");
         playerController = player.GetComponent<PlayerController>();
         enemyController = enemy.GetComponent<EnemyController>();
+        comboText = GameObject.Find("Combo");
+        judgeText = GameObject.Find("Judge");
+        damageText = GameObject.Find("Damage");
     }
 
     
@@ -67,18 +76,28 @@ public class GameDirector : MonoBehaviour
         if (type == 1) {
             playerController.modifyHP((float)(playerController.attack * 0.2 * (1 + 0.02 * combo)));
             enemyController.modifyHP((float)(-playerController.attack * (1 + 0.02 * combo)));
+            damage = (float)(playerController.attack * (1 + 0.02 * combo));
             combo++;
+            judgeText.GetComponent<Text>().text = "Perfect";
         } else if (type == 2) {
             playerController.modifyHP((float)(playerController.attack * 0.1 * (1 + 0.02 * combo)));
             enemyController.modifyHP((float)(-playerController.attack * 0.6 * (1 + 0.02 * combo)));
+            damage = (float)(playerController.attack * 0.6 * (1 + 0.02 * combo));
             combo++;
+            judgeText.GetComponent<Text>().text = "Great";
         } else if (type == 3) {
             enemyController.modifyHP((float)(-playerController.attack * 0.3));
             playerController.modifyHP((float)(-enemyController.attack * 0.5));
+            damage = (float)(playerController.attack * 0.3);
             combo = 0;
+            judgeText.GetComponent<Text>().text = "Good";
         } else if (type == 4) {
             playerController.modifyHP((float)-enemyController.attack);
+            judgeText.GetComponent<Text>().text = "Miss";
         }
+        comboText.GetComponent<Text>().text = combo.ToString() + " Combo";
+        damage = Mathf.Round(damage)*100;
+        damageText.GetComponent<Text>().text = damage.ToString() + " !";
         print("combo : " + combo + "\ntype : "+ type);
     }
     
