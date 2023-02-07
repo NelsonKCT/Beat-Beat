@@ -93,10 +93,12 @@ public class GameDirector : MonoBehaviour
             judgeText.GetComponent<Text>().text = "Good";
         } else if (type == 4) {
             playerController.modifyHP((float)-enemyController.attack);
+            damage = 0;
+            combo = 0;
             judgeText.GetComponent<Text>().text = "Miss";
         }
+        damage = Mathf.Round(damage); 
         comboText.GetComponent<Text>().text = combo.ToString() + " Combo";
-        damage = Mathf.Round(damage)*100;
         damageText.GetComponent<Text>().text = damage.ToString() + " !";
         print("combo : " + combo + "\ntype : "+ type);
     }
