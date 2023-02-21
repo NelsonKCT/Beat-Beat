@@ -71,29 +71,34 @@ public class GameDirector : MonoBehaviour
     type = 2 是 great(+-50ms)，打出60%傷害並且回復10%自身攻擊的血量
     type = 3 是 good(+-80ms)，打出30%傷害且受到50%敵方攻擊的傷害並使combo歸0
     type = 4 是 miss(>80ms)，受到敵方全額傷害且combo歸0
+    預設每 1 combo +2% 傷害
     */
+    
+    
     public void calculate_result(int type) {
         if (type == 1) {
-            playerController.modifyHP((float)(playerController.attack * 0.2 * (1 + 0.02 * combo)));
-            enemyController.modifyHP((float)(-playerController.attack * (1 + 0.02 * combo)));
-            damage = (float)(playerController.attack * (1 + 0.02 * combo));
+            playerController.modifyHP((float)(playerController.attack * playerController.PerfectRegen * (1 + playerController.ComboScale * combo)));
+            enemyController.modifyHP((float)(-playerController.attack *playerController.PerfectDamage* (1 + playerController.ComboScale * combo)));
+            damage = (float)(playerController.attack * (1 + playerController.ComboScale * combo));
             combo++;
             judgeText.GetComponent<Text>().text = "Perfect";
         } else if (type == 2) {
-            playerController.modifyHP((float)(playerController.attack * 0.1 * (1 + 0.02 * combo)));
-            enemyController.modifyHP((float)(-playerController.attack * 0.6 * (1 + 0.02 * combo)));
-            damage = (float)(playerController.attack * 0.6 * (1 + 0.02 * combo));
+            playerController.modifyHP((float)(playerController.attack * playerController.GreatRegen * (1 + playerController.ComboScale * combo)));
+            enemyController.modifyHP((float)(-playerController.attack * playerController.GreatDamage * (1 + playerController.ComboScale * combo)));
+            playerController.modifyHP((float)(-enemyController.attack * playerController.GreatEnemyDamage));
+            damage = (float)(playerController.attack * playerController.GreatDamage * (1 + playerController.ComboScale * combo));
             combo++;
             judgeText.GetComponent<Text>().text = "Great";
         } else if (type == 3) {
-            enemyController.modifyHP((float)(-playerController.attack * 0.3));
-            playerController.modifyHP((float)(-enemyController.attack * 0.5));
-            damage = (float)(playerController.attack * 0.3);
+            enemyController.modifyHP((float)(-playerController.attack * playerController.GoodDamage));
+            playerController.modifyHP((float)(-enemyController.attack * playerController.GoodEnemyDamage));
+            damage = (float)(playerController.attack * playerController.GoodDamage);
             combo = 0;
             judgeText.GetComponent<Text>().text = "Good";
         } else if (type == 4) {
-            playerController.modifyHP((float)-enemyController.attack);
-            damage = 0;
+            enemyController.modifyHP((float)(-playerController.attack * playerController.MissDamage));
+            playerController.modifyHP((float)-enemyController.attack * playerController.MissEnemyDamage);
+            damage = (float)(playerController.attack * playerController.MissDamage);
             combo = 0;
             judgeText.GetComponent<Text>().text = "Miss";
         }

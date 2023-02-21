@@ -75,15 +75,19 @@ public class NoteController : MonoBehaviour
     type = 3 是 good(+-80ms)，打出30%傷害且受到50%敵方攻擊的傷害並使combo歸0
     type = 4 是 miss(>80ms)，受到敵方全額傷害且combo歸0
     */
+    public static double PerfectRange = 0.03;
+    public static double GreatRange = 0.05;
+    public static double GoodRange = 0.08;
+    public static double MissRange = -0.08;
     public int checkIfHit () {
         //print(judgeTime + " " + bgm.time + " " + transform.position.x);
-        if (Math.Abs(judgeTime - bgm.time) < 0.03) {
+        if (Math.Abs(judgeTime - bgm.time) < PerfectRange) {
             return 1;
-        } else if (Math.Abs(judgeTime - bgm.time) < 0.05) {
+        } else if (Math.Abs(judgeTime - bgm.time) < GreatRange) {
             return 2;
-        } else if (Math.Abs(judgeTime - bgm.time) < 0.08) {
+        } else if (Math.Abs(judgeTime - bgm.time) < GoodRange) {
             return 3;
-        } else if (judgeTime - bgm.time < -0.08) {
+        } else if (judgeTime - bgm.time < MissRange) {
             print(judgeTime + " " + bgm.time + " " + transform.position.x);
             return 4;
         }

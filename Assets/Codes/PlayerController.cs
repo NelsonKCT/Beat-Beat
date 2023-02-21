@@ -11,8 +11,18 @@ public class PlayerController : MonoBehaviour
     spriteRenderer : 控制物件的顯示
     */
     float hp;
-    float maxHp;
+    public float maxHp;
     public float attack;
+    public float ComboScale = 0.02f;
+    public float PerfectDamage = 1f;
+    public float PerfectRegen = 0.2f;
+    public float GreatDamage = 0.6f;
+    public float GreatEnemyDamage = 0f;
+    public float GreatRegen = 0.1f;
+    public float GoodDamage = 0.3f;
+    public float GoodEnemyDamage = 0.5f;
+    public float MissDamage = 0f;
+    public float MissEnemyDamage = 1f;
     SpriteRenderer spriteRenderer;
     [SerializeField] Healthbar _healthbar;
     // Start is called before the first frame update
