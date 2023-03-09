@@ -653,7 +653,7 @@ MonoBehaviour:
     booleanVal: 1
 --- !u!114 &396948472
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
